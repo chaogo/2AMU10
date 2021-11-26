@@ -49,9 +49,16 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                     column = 0
                     break
 
-            """
-            ADD HERE:         # CHECK block: loop through all n*m
-            """
+            # CHECK BLOCK: Loop through rows (l) and columns (k) inside
+            # Find the coordinates of the upper left corner of the block in which (i,j) is positioned
+            block_position_verti = i // m * m
+            block_position_hori = j // n * n
+
+            for l in range(block_position_verti, block_position_verti + m):
+                for k in range(block_position_hori, block_position_hori + n):
+                    if board.get(l, k) == SudokuBoard.empty:
+                        block = 0
+                        break
 
             # the total score in the game earned with this move
             score = 0
@@ -110,14 +117,17 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                             legal = False
                             break
 
-                """if legal:
-                    # Check if value already in block
+                if legal:
+                    # Find the coordinates of the upper left corner of the block in which (i,j) is positioned
                     block_position_verti = i // m * m
                     block_position_hori = j // n * n
 
-                    for k in range(, )
-                    for l in range()
-                    """
+                    # Loop through rows (l) and columns (k) inside
+                    for l in range(block_position_verti, block_position_verti + m):
+                        for k in range(block_position_hori, block_position_hori + n):
+                            if board.get(l, k) == value:
+                                legal = False
+                                break
 
                 # If all checks are passed add the move to the list of legal moves
                 if legal:
