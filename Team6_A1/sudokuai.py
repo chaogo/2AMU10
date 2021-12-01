@@ -143,7 +143,8 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
 
             return all_moves_legal
 
-        def minimax(board, depth, alpha, beta, parent_move_score, first_time, max_player):
+        def minimax(board, depth, max_player):
+
             if depth == 0:
                 return 0
 
@@ -151,41 +152,52 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
             if not moves:
                 return 0
 
-            global best_move
             if max_player:
-                if first_time: best_move = moves[0]
                 max_eval = -float('inf')
                 for move in moves:
                     i, j, value = move.i, move.j, move.value
-                    cur_move_score = calculate_move_score(board, i, j, value, True)  # moved at the same time
-                    eval = cur_move_score + minimax(board, depth - 1, alpha, beta, cur_move_score, False, False)
-                    if eval > max_eval:
-                        max_eval = eval
-                        if first_time: best_move = move
-                    board.put(i, j, 0)  # reset
-                    alpha = max(alpha, eval+parent_move_score)
-                    if beta <= alpha:
-                        break
+                    # moved when implementing calculate_move_score
+                    cur_move_score = calculate_move_score(board, i, j, value, True)
+                    # aggregate scores
+                    eval = cur_move_score + minimax(board, depth-1, False)
+                    max_eval = max(max_eval, eval)
+                    # reset | pop move from board
+                    board.put(i, j, 0)
                 return max_eval
 
             else:
                 min_eval = float('inf')
                 for move in moves:
                     i, j, value = move.i, move.j, move.value
+                    # moved when implementing calculate_move_score
                     cur_move_score = calculate_move_score(board, i, j, value, False)
-                    eval = cur_move_score + minimax(board, depth-1, alpha, beta, cur_move_score, False, True)
+                    # aggregate scores
+                    eval = cur_move_score + minimax(board, depth-1, True)
                     min_eval = min(min_eval, eval)
+                    # reset | pop move from board
                     board.put(i, j, 0)
-                    beta = min(beta, eval+parent_move_score)
-                    if beta <= alpha:
-                        break
                 return min_eval
 
+        #get board and set as initial best move, the first of legal moves
         board = game_state.board
         moves = get_all_legal_moves(board)
         best_move = moves[0]
         self.propose_move(best_move)
 
-        for depth in range(2, 20):
-            minimax(board, depth, -float('inf'), float('inf'), 0, True, True)
+        for depth in range(1, 20):
+            #print(depth, '\t')  # usually can search for less than 5 layers
+            max_eval = -float('inf')
+            for move in moves:
+                i, j, value = move.i, move.j, move.value
+                cur_move_score = calculate_move_score(board, i, j, value, True)
+                eval = cur_move_score + minimax(board, depth - 1, False)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
+                board.put(i, j, 0)
             self.propose_move(best_move)
+
+#----------------------------#
+# the order of playing matters for small-size game board, e.g. easy-2x2.txt
+# compared with greedy_player, the minimax agent considers more turns, so it usually get fewer scores in the early stage, but overtake the opponent later
+# the scores are very close when losing to greedy_player
