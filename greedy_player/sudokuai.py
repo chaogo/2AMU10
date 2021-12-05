@@ -6,6 +6,7 @@ import re
 from competitive_sudoku.execute import solve_sudoku
 from competitive_sudoku.sudoku import GameState, Move
 import competitive_sudoku.sudokuai
+import platform
 
 
 class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
@@ -15,7 +16,7 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
 
     def __init__(self):
         super().__init__()
-        self.solve_sudoku_path = None  # N.B. this path is set from outside
+        self.solve_sudoku_path = 'bin\\solve_sudoku.exe' if platform.system() == 'Windows' else 'bin/solve_sudoku'  # N.B. this path is set from outside
 
     # Uses solve_sudoku to compute a greedy move.
     def compute_best_move(self, game_state: GameState) -> None:
