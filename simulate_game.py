@@ -114,6 +114,7 @@ def simulate_game(initial_board: SudokuBoard, player1: SudokuAI, player2: Sudoku
             game_state.scores[player_number-1] = game_state.scores[player_number-1] + player_score
             print(f'Reward: {player_score}')
             print(game_state)
+
         if game_state.scores[0] > game_state.scores[1]:
             print('Player 1 wins the game.')
         elif game_state.scores[0] == game_state.scores[1]:
@@ -165,10 +166,16 @@ def main():
     if args.second in ('random_player', 'greedy_player'):
         player2.solve_sudoku_path = solve_sudoku_path
 
+
+    # for i in range(5):
+    #     print('Iteration: ' + str(i))
+    #     simulate_game(board, player1, player2, solve_sudoku_path=solve_sudoku_path, calculation_time=args.time)
     simulate_game(board, player1, player2, solve_sudoku_path=solve_sudoku_path, calculation_time=args.time)
 
 
 if __name__ == '__main__':
     main()
+
+
 
 
