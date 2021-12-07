@@ -103,13 +103,13 @@ def test():
 
 
     # game conditions
-    agents = ['Team6_A0', 'random_player', 'greedy_player']
+    agents = ['Team6_A1', 'random_player', 'greedy_player']
     boards = ["easy-2x2", "easy-3x3", "empty-2x2", "empty-2x2", "empty-2x3", "empty-3x3", "empty-3x4", "empty-4x4",
               "hard-3x3", "random-2x3", "random-3x3", "random-3x4", "random-4x4"]
     time_candidates = [0.1, 0.5, 1, 5]
     n_games = 10
     solve_sudoku_path = 'bin\\solve_sudoku.exe' if platform.system() == 'Windows' else 'bin/solve_sudoku'
-    P1 = 'Team6_A0'  # team6_A1 plays the first move
+    P1 = 'Team6_A1'  # team6_A1 plays the first move
     player1 = importlib.import_module(P1 + '.sudokuai').SudokuAI()
 
     for P2 in agents[1:]:
