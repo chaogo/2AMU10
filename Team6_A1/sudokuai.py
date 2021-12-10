@@ -8,15 +8,6 @@ from competitive_sudoku.sudoku import GameState, Move, SudokuBoard, TabooMove
 import competitive_sudoku.sudokuai
 import copy
 
-
-class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
-    """
-    Sudoku AI that computes a move for a given sudoku configuration.
-    """
-
-    def __init__(self):
-        super().__init__()
-
 class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
     """
     Sudoku AI that computes a move for a given sudoku configuration.
