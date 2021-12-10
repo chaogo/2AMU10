@@ -144,6 +144,69 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
 
             return all_moves_legal
 
+        def single_poss_heuristic(board):
+
+            legal_moves = get_all_legal_moves(board)
+            # best_move = legal_moves[0]
+            # propose_move(best_move)
+            coordinates = []
+            for move in legal_moves:
+                # for i in range(N):
+                #     for j in range(N):
+                # print("Iteration\n")
+                if (move.i, move.j) not in coordinates:
+                    coordinates.append(tuple([move.i, move.j]))
+
+            # coordinates = []
+            # for i in range(N):
+            #     for j in range(N):
+            #         if board.get(i, j) == SudokuBoard.empty and [i, j] not in coordinates:
+            #             coordinates.append(tuple((i, j)))
+            single_poss_moves = []
+
+            for coord in coordinates:
+                i = coord[0]
+                j = coord[1]
+
+                nums = list(range(1, N + 1))
+                # nums = [1...9]
+                # print("Nums:{0}\n".format(nums))
+                single_poss_flag = False
+
+                # CHECK ROW: loop through all k values in row i
+                for k in range(N):
+                    if board.get(i, k) is not SudokuBoard.empty:
+                        nums.remove(board.get(i, k))
+                        if len(nums) == 1:
+                            single_poss_flag = True
+                            break
+
+                # CHECK COLUMN: loop through all l values in column j
+                if single_poss_flag:
+                    for l in range(N):
+                        if (board.get(l, j) is not SudokuBoard.empty) and (board.get(l, j) in nums):
+                            nums.remove(board.get(l, j))
+                            if len(nums) == 1:
+                                single_poss_flag = True
+                                break
+
+                if single_poss_flag:
+                    # Find the coordinates of the upper left corner of the block in which (i,j) is positioned
+                    block_position_verti = i // m * m
+                    block_position_hori = j // n * n
+                    # Loop through rows (l) and columns (k) inside
+                    for l in range(block_position_verti, block_position_verti + m):
+                        for k in range(block_position_hori, block_position_hori + n):
+                            if (board.get(l, j) is not SudokuBoard.empty) and (board.get(l, j) in nums):
+                                nums.remove(board.get(l, k))
+                                if len(nums) == 1:
+                                    single_poss_flag = True
+                                    break
+                if single_poss_flag:
+                    single_poss_moves.append(Move(i, j, nums[0]))
+
+            return single_poss_moves, legal_moves
+
         def minimax(board, depth, alpha, beta, max_player):
             if depth == 0:
                 return 0
@@ -185,6 +248,20 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
         points_rule = {0: 0, 1: 1, 2: 3, 3: 7}
         board = game_state.board
         moves = get_all_legal_moves(board)
+
+        # single_poss_moves, legal_moves = single_poss_heuristic(board)
+        #
+        # if single_poss_moves:
+        #     moves = single_poss_moves
+        #     #for move in moves:
+        #         # print("Heuristic Moves\n")
+        #         # print(move)
+        #     best_move = moves[0]
+        #     self.propose_move(best_move)
+        # else:
+        #     moves = legal_moves
+        #     best_move = moves[0]
+        #     self.propose_move(best_move)
         best_move = moves[0]
         self.propose_move(best_move)
 
