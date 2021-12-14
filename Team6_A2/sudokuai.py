@@ -132,7 +132,7 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
 
             return score
 
-        def get_all_legal_moves(using_heuristic_move: bool = False) -> list:
+        def get_all_legal_moves(threshold=0.5) -> list:
             """
             this function is to get all possible moves for next step
             :return: a list of possible moves
@@ -152,14 +152,13 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                     single_possibility_moves.append(possible_moves[0])
 
             # single_possibility_moves as heuristic possible moves is prior to normal moves
-            if using_heuristic_move and single_possibility_moves:
+            if len(positions_of_empty_cells) / (N*N) > threshold and single_possibility_moves:
                 return single_possibility_moves
             return legal_moves
 
         def minimax(depth: int, alpha, beta, maximizer: bool):
             """
             minimax search with alpha-beta pruning
-
             :param depth: the depth of the minimax tree
             :param alpha: best already explored option along path to the root for maximizer
             :param beta: best already explored option along path to the root for minimizer
@@ -219,19 +218,8 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
         best_move = candidate_moves[0]
         self.propose_move(best_move)
 
-        # decide the starting search depth based on the number of empties
-        starting_depth = 1
-        # need more experiments to set these parameters
-        # empties = len(positions_of_empty_cells)
-        # if empties < 10:
-        #     starting_depth = 4
-        # elif empties < 20:
-        #     starting_depth = 3
-        # else:
-        #     starting_depth = 2
-
         # Iterative deepening depth-first search
-        for depth in range(starting_depth, 50):
+        for depth in range(1, 50):
             max_eval = -float('inf')
             for candidate_move in candidate_moves:
                 cur_move_score = move_and_calculate_score(candidate_move, True)
