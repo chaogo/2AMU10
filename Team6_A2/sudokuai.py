@@ -132,7 +132,7 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
 
             return score
 
-        def get_all_legal_moves(threshold=0.5) -> list:
+        def get_all_legal_moves(using_heuristic_move: bool = False) -> list:
             """
             this function is to get all possible moves for next step
             :return: a list of possible moves
@@ -152,7 +152,7 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                     single_possibility_moves.append(possible_moves[0])
 
             # single_possibility_moves as heuristic possible moves is prior to normal moves
-            if len(positions_of_empty_cells) / (N*N) > threshold and single_possibility_moves:
+            if using_heuristic_move and single_possibility_moves:
                 return single_possibility_moves
             return legal_moves
 
