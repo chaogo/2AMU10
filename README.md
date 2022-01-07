@@ -1,6 +1,5 @@
 ## 2AMU10 - Foundations of AI
-
-###Competitive sudoku
+### Competitive sudoku
 
 This archive contains template code for a competitive sudoku assignment.
 The goal of the assignment is to build an AI for a competitive sudoku player.
