@@ -54,25 +54,22 @@ class State:
             return 1
         return -1
 
-    def get_score(self, next_board: SudokuBoard, move: Move):
-        """
+    def get_score(self, move: Move):
 
-        :param next_board:
-        :param move:
-        :return:
-        """
-        x, y = move.i, move.j
-        m, n, N = next_board.m, next_board.n, next_board.N
+        x, y, value = move.i, move.j, move.value
+        board = self.board
+        m, n, N = board.m, board.n, board.N
+        board.put(x, y, value)
 
         row_completed = True
         for j in range(N):
-            if next_board.get(x, j) == 0:
+            if board.get(x, j) == 0:
                 row_completed = False
                 break
 
         col_completed = True
         for i in range(N):
-            if next_board.get(i, y) == 0:
+            if board.get(i, y) == 0:
                 row_completed = False
                 break
 
@@ -81,12 +78,13 @@ class State:
         j0 = y // n * n
         for i in range(i0, i0+m):
             for j in range(j0, j0+n):
-                if next_board.get(i, j) == 0:
+                if board.get(i, j) == 0:
                     blk_completed = False
                     break
             if not blk_completed:
                 break
 
+        board.put(x, y, 0)
         regions_completed = row_completed + col_completed + blk_completed
         return points_rule[regions_completed]
 
@@ -104,7 +102,7 @@ class State:
         next_board.put(i, j, value)
 
         # update scores
-        score = self.get_score(next_board, move)
+        score = self.get_score(move)
         next_scores = copy.copy(self.scores)
         next_scores[self.player-1] += score
 

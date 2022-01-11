@@ -79,7 +79,22 @@ class MonteCarloTreeSearchNode:
         return current_rollout_state.game_result()
 
     def rollout_policy(self, possible_moves):
-        return possible_moves[np.random.randint(len(possible_moves))]
+        # the policy should quickly get the game result, but quick policy usually can not make it converge quickly
+        # try greedy policy
+        import random
+        sample_size = min(len(possible_moves), 100)
+        sample = random.sample(possible_moves, sample_size)
+        max_score = 0
+        max_move = sample[0]
+        for move in sample:
+            cur_score = self.state.get_score(move)
+            if cur_score == 7:
+                return move
+            if cur_score > max_score:
+                max_score = cur_score
+                max_move = move
+        return max_move
+        # return possible_moves[np.random.randint(len(possible_moves))]
 
     # backpropagation
     def backpropagate(self, result):
