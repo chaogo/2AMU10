@@ -7,6 +7,7 @@ from Team6_A3.State import State
 from competitive_sudoku.sudoku import GameState, Move, SudokuBoard, TabooMove
 import competitive_sudoku.sudokuai
 import time
+import numpy as np
 
 
 class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
@@ -84,24 +85,57 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
         return legal_moves
 
     def compute_best_move(self, game_state: GameState) -> None:
-        init_board = game_state.board
-        init_scores = game_state.scores
-        init_legal_moves = self.get_initial_legal_moves(game_state)
-        init_player = 1 if len(game_state.moves) % 2 == 0 else 2
+        root = self.load()
+        can_find_target_node = 0
+        if root:
+            # find target node corresponding to current game_state
+            for move in game_state.moves[-2:]:
+                if not isinstance(move, TabooMove): # 必须找到node,没有的话就只能新扩展
+                    for child in root.children:
+                        if child.parent_action == move:
+                            root = child  # 有可能还没扩展开，找不到
+                            can_find_target_node += 1
+                            break
 
-        initial_state = State(init_board, init_scores, init_legal_moves, init_player, init_player)
-        root = MonteCarloTreeSearchNode(state=initial_state)
+            # already found
+            if can_find_target_node == 2:
+                # update legal moves
+                new_legal_moves = []
+                for move in root.state.legal_moves:
+                    if move in game_state.taboo_moves:
+                        continue
+                    new_legal_moves.append(move)
+                root.state.legal_moves = new_legal_moves
+                root.untried_actions()  # need call this function to assign new_legal_moves to MC node!
+                # update root.children
+                new_children = []
+                for child in root.children:
+                    if child.parent_action in game_state.taboo_moves:
+                        continue
+                    new_children.append(child)
+                root.children = new_children
+                # propose a move at the start
+                self.propose_move(root.state.legal_moves[0])
 
+        # initialize a root node if cannot find the target node from previous tree
+        if can_find_target_node != 2:
+            init_board = game_state.board
+            init_scores = game_state.scores
+            init_legal_moves = self.get_initial_legal_moves(game_state)
+            init_player = 1 if len(game_state.moves) % 2 == 0 else 2
 
-        simulation_no = 1000   # the number of game simulations
+            initial_state = State(init_board, init_scores, init_legal_moves, init_player, init_player)
+            root = MonteCarloTreeSearchNode(state=initial_state)
 
-        # start = time.time()
+            self.propose_move(init_legal_moves[0])
+
+        simulation_no = 100000
         for i in range(simulation_no):
             v = root._tree_policy()
             reward = v.rollout()
             v.backpropagate(reward)
 
-            # if i % 10 == 0:
-            # print(f"{i} simulations cost time {time.time()-start}")
-            selected_node = root.best_child(c_param=0.)
-            self.propose_move(selected_node.parent_action)
+            if i % 10 == 0:  # propose a move and save the current node status every 10 simulations
+                selected_node = root.best_child(c_param=0.)
+                self.propose_move(selected_node.parent_action)
+                self.save(root)  # only keep the latest saved node

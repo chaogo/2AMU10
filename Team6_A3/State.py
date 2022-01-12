@@ -109,10 +109,10 @@ class State:
         # update legal moves for next state
         next_legal_moves = []
         for mv in self.legal_moves:
-            if mv.i == i and mv.j == j: continue  # 相同位置任何值
+            if mv.i == i and mv.j == j: continue
             if mv.value == value and (mv.i == i or mv.j == j or (mv.i//m*m <= i < mv.i//m*m+m and mv.j//n*n <= j < mv.j//n*n+n)): continue
             next_legal_moves.append(mv)
-        # print(f"{[(mvs.i, mvs.j, mvs.value) for mvs in self.legal_moves]} -> {(i, j, value)} ->  {[(mvs.i, mvs.j, mvs.value) for mvs in next_legal_moves]}")
+
         # update player_number
         next_player = 3 - self.player
 
