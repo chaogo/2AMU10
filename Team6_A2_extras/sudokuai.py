@@ -135,12 +135,11 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
             return score
 
 
-        def get_all_legal_moves(threshold=0.4) -> list:
+        def get_all_legal_moves(threshold=1) -> list:
             """
             this function is to get all possible moves for next step
             :return: a list of possible moves
             """
-            get_all_legal_moves.count += 1
             legal_moves = []
             single_possibility_moves = []
             for (x, y) in positions_of_empty_cells:
@@ -154,9 +153,6 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                 # only one possible move means "single possibility move" is found
                 if len(possible_moves) == 1:
                     single_possibility_moves.append(possible_moves[0])
-
-            if (get_all_legal_moves.count != 1):
-                single_possibility_moves = False
 
             # single_possibility_moves as heuristic possible moves is prior to normal moves
             if (len(positions_of_empty_cells)/(game_state.board.N*game_state.board.N) > threshold) and single_possibility_moves:
@@ -228,19 +224,26 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
         # so that not need to scan the whole board every time trying a move
         find_empties_and_missings()
 
-        get_all_legal_moves.count = 0
-
         candidate_moves = get_all_legal_moves()
 
         # take the first as the best move before searching to avoid lose immediately when time_limit == 0.1
         best_move = candidate_moves[0]
         self.propose_move(best_move)
 
-        #sort moves by descending Move.value
-        #candidate_moves.sort(key=attrgetter('value'), reverse=True)
+        # decide the starting search depth based on the number of empties
+        empties = len(positions_of_empty_cells)
+        empties_percentage = empties / N**2
+        if empties_percentage < 0.30:
+            starting_depth = 4
+        elif empties_percentage < 0.50:
+            starting_depth = 3
+        elif empties_percentage < 0.70:
+            starting_depth = 2
+        else:
+            starting_depth = 1
 
         # Iterative deepening depth-first search
-        for depth in range(1, 50):
+        for depth in range(starting_depth, 50):
             last_moves = []
             max_eval = -float('inf')
             for candidate_move in candidate_moves:
@@ -251,5 +254,7 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
                     best_move = candidate_move
                 last_moves.append([eval, candidate_move])
                 cancel_move(candidate_move)
+            # a-b pruning heuristic - sort the candidate moves for next iteration
+            # based on current evaluation
             candidate_moves = update_ordering(last_moves)
             self.propose_move(best_move)
