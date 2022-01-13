@@ -45,14 +45,26 @@ class State:
         on your state corresponding to win,
         tie or a loss.
         '''
+        # if self.empties:
+        #     return 0  # no solution is counted as draw
+        # # win/lose/tie is always for the init_player
+        # if self.scores[0] == self.scores[1]:
+        #     return 0
+        # if self.scores[self.init_player-1] > self.scores[2-self.init_player]:
+        #     return 1
+        # return -1
+        """game_result is the score difference at the end of a game"""
         if self.empties:
-            return 0  # no solution is counted as draw
+            return 0, 0  # no solution is counted as draw
         # win/lose/tie is always for the init_player
         if self.scores[0] == self.scores[1]:
-            return 0
-        if self.scores[self.init_player-1] > self.scores[2-self.init_player]:
-            return 1
-        return -1
+            return 0, 0
+        if self.scores[self.init_player - 1] > self.scores[2 - self.init_player]:
+            end_game_score = self.scores[self.init_player - 1] - self.scores[2 - self.init_player]
+            return 1, end_game_score
+        else:
+            end_game_score = self.scores[2 - self.init_player] - self.scores[self.init_player - 1]
+            return -1, end_game_score
 
     def get_score(self, move: Move):
 

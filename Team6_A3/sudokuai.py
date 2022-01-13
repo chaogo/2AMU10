@@ -132,8 +132,11 @@ class SudokuAI(competitive_sudoku.sudokuai.SudokuAI):
         simulation_no = 100000
         for i in range(simulation_no):
             v = root._tree_policy()
-            reward = v.rollout()
-            v.backpropagate(reward)
+            # reward = v.rollout()
+            # v.backpropagate(reward)
+            #backpropagate score reward instead of wins
+            player, reward = v.rollout()
+            v.backpropagate(player,reward)
 
             if i % 10 == 0:  # propose a move and save the current node status every 10 simulations
                 selected_node = root.best_child(c_param=0.)

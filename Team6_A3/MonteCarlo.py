@@ -94,11 +94,13 @@ class MonteCarloTreeSearchNode:
                 max_score = cur_score
                 max_move = move
         return max_move
-        # return possible_moves[np.random.randint(len(possible_moves))]
+        #return possible_moves[np.random.randint(len(possible_moves))]
 
     # backpropagation
-    def backpropagate(self, result):
+    def backpropagate(self, player, result):
         self._number_of_visits += 1.
-        self._results[result] += 1.
+        self._results[player] += result
+        #self._results[result] += 1.
         if self.parent:
-            self.parent.backpropagate(result)
+            #self.parent.backpropagate(result)
+            self.parent.backpropagate(player, result)
