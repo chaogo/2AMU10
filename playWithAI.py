@@ -16,12 +16,12 @@ from competitive_sudoku.sudoku import GameState, SudokuBoard, Move, TabooMove, l
 from competitive_sudoku.sudokuai import SudokuAI
 
 
-def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_player: SudokuAI, solve_sudoku_path: str, time_for_human: int = 10, time_for_AI: float = 0.5) -> None:
+def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_player: SudokuAI, solve_sudoku_path: str, time_for_human: int = 1, time_for_AI: float = 0.5) -> None:
     """
     Simulates a game between two instances of SudokuAI, starting in initial_board. The first move is played by player1.
     @param initial_board: The initial position of the game.
     @param human_player_number: either 1 or 2 corresponding to whether you want to play first or second
-    @param AI_player: Your AI opponent which can be "team6_A1", "team6_A2", "team6_A3_extra1", "random_player", and "greedy_player"
+    @param AI_player: Your AI opponent which can be "Team6_A1", "Team6_A2", "Team6_A3", "random_player", and "greedy_player"
     @param solve_sudoku_path: The location of the oracle executable.
     @param time_for_AI: The time limit for AI to calculate the best move
     @param time_for_human: The time limit for human to propose a move
@@ -51,11 +51,11 @@ def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_playe
                 print(f"please propose a move in the form of <i j value> within {time_for_human} seconds. NB: Current "
                       f"taboo moves are {[(mv.i, mv.j, mv.value) for mv in game_state.taboo_moves]}")
 
-                import signal
-                def alarm_handler(signum, frame):
-                    raise TimeoutExpired
-                signal.signal(signal.SIGALRM, alarm_handler)
-                signal.alarm(time_for_human)  # wait for time_for_human seconds
+                # import signal
+                # def alarm_handler(signum, frame):
+                #     raise TimeoutExpired
+                # signal.signal(signal.SIGALRM, alarm_handler)
+                # signal.alarm(time_for_human)  # wait for time_for_human seconds
 
                 try:
                     move = input().split(" ")
@@ -64,8 +64,8 @@ def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_playe
                     print("this is an illegal input, you have one chance left to try another.")
                     move = input().split(" ")
                     i, j, value = (int(k) for k in move)
-                finally:
-                    signal.alarm(0)  # cancel alarm
+                # finally:
+                #     signal.alarm(0)  # cancel alarm
 
             else:
                 print(f'-----------------------------\nYour AI opponent is thinking...')
@@ -130,6 +130,7 @@ def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_playe
         else:
             print("You lose.")
 
+
 def play_with_AI(board_name: str, play_first: bool, opponent_name: str, time_limit_for_human: int, time_limit_for_AI: int):
     solve_sudoku_path = 'bin\\solve_sudoku.exe' if platform.system() == 'Windows' else 'bin/solve_sudoku'
     human_player_number = 1 if play_first else 2
@@ -137,10 +138,11 @@ def play_with_AI(board_name: str, play_first: bool, opponent_name: str, time_lim
     board = load_sudoku_from_text(Path(f"boards/{board_name}.txt").read_text())
     simulate_game(board, human_player_number, AI_player, solve_sudoku_path, time_limit_for_human, time_limit_for_AI)
 
+
 if __name__ == '__main__':
     play_first = False  # You play first or not
-    opponent_name = "greedy_player"  # can choose from "team6_A1", "team6_A2", "team6_A3_extra1", "random_player", and "greedy_player"
-    time_limit_for_human = 100  # set a time limit
+    opponent_name = "Team6_A3"  # can choose from "Team6_A1", "Team6_A2", "Team6_A3", "random_player", and "greedy_player"
+    time_limit_for_human = 600  # set a time limit for players
     time_limit_for_AI = 1  # in seconds
     initial_board_name = "random-3x3"  # can choose from "/boards"
     play_with_AI(initial_board_name, play_first, opponent_name, time_limit_for_human, time_limit_for_AI)

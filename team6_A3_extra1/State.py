@@ -5,7 +5,7 @@ points_rule = {0: 0, 1: 1, 2: 3, 3: 7}
 
 
 class State:
-    def __init__(self, board: SudokuBoard, scores: list, legal_moves: list, player: int, init_player: int):  # GameState.board作为state
+    def __init__(self, board: SudokuBoard, scores: list, legal_moves: list, player: int, init_player: int):
         self.board = board
         self.scores = scores
         self.legal_moves = legal_moves
@@ -14,15 +14,9 @@ class State:
         self.empties = False
 
     def get_legal_actions(self):
-        # return self.legal_moves
         return copy.copy(self.legal_moves)
 
     def is_game_over(self) -> bool:
-        '''
-        It is the game over condition
-        and depends on your game. Returns
-        true or false
-        '''
         # game over if there is no solution
         if len(self.legal_moves) == 0:
             return True
@@ -40,20 +34,7 @@ class State:
         return over
 
     def game_result(self):
-        '''
-        Returns 1 or 0 or -1 depending
-        on your state corresponding to win,
-        tie or a loss.
-        '''
-        # if self.empties:
-        #     return 0  # no solution is counted as draw
-        # # win/lose/tie is always for the init_player
-        # if self.scores[0] == self.scores[1]:
-        #     return 0
-        # if self.scores[self.init_player-1] > self.scores[2-self.init_player]:
-        #     return 1
-        # return -1
-        """game_result is the score difference at the end of a game"""
+        """ Game_result is the score difference at the end of a game. """
         if self.empties:
             return 0, 0  # no solution is counted as draw
         # win/lose/tie is always for the init_player
@@ -67,7 +48,6 @@ class State:
             return -1, end_game_score
 
     def get_score(self, move: Move):
-
         x, y, value = move.i, move.j, move.value
         board = self.board
         m, n, N = board.m, board.n, board.N
@@ -101,11 +81,7 @@ class State:
         return points_rule[regions_completed]
 
     def move(self, move: Move):
-        '''
-        Changes the state of your
-        board with a new value.
-        Returns the new state after making a move.
-        '''
+        """ Returns the new state after making a move. """
 
         i, j, value = move.i, move.j, move.value
         m, n, N = self.board.m, self.board.n, self.board.N

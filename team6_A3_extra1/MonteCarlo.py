@@ -29,17 +29,12 @@ class MonteCarloTreeSearchNode:
         return self._number_of_visits
 
     # selection and expansion
-
     def _tree_policy(self):
         current_node = self
         while not current_node.is_terminal_node():
-
-            # print(f"current_node._untried_actions = {[[mv.i, mv.j, mv.value] for mv in current_node._untried_actions]}")
             if not current_node.is_fully_expanded():
-                # print("expanding")
                 return current_node.expand()  # -> exploration
             else:
-                # print("selecting")
                 current_node = current_node.best_child()  # -> exploitation
         return current_node  # terminal node
 
@@ -94,13 +89,10 @@ class MonteCarloTreeSearchNode:
                 max_score = cur_score
                 max_move = move
         return max_move
-        #return possible_moves[np.random.randint(len(possible_moves))]
 
     # backpropagation
     def backpropagate(self, player, result):
         self._number_of_visits += 1.
         self._results[player] += result
-        #self._results[result] += 1.
         if self.parent:
-            #self.parent.backpropagate(result)
             self.parent.backpropagate(player, result)
