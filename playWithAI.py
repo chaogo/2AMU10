@@ -21,7 +21,7 @@ def simulate_game(initial_board: SudokuBoard, human_player_number: int, AI_playe
     Simulates a game between two instances of SudokuAI, starting in initial_board. The first move is played by player1.
     @param initial_board: The initial position of the game.
     @param human_player_number: either 1 or 2 corresponding to whether you want to play first or second
-    @param AI_player: Your AI opponent which can be "Team6_A1", "Team6_A2", "Team6_A3", "random_player", and "greedy_player"
+    @param AI_player: Your AI opponent which can be "team6_A1", "team6_A2", "team6_A3_extra1", "random_player", and "greedy_player"
     @param solve_sudoku_path: The location of the oracle executable.
     @param time_for_AI: The time limit for AI to calculate the best move
     @param time_for_human: The time limit for human to propose a move
@@ -139,7 +139,7 @@ def play_with_AI(board_name: str, play_first: bool, opponent_name: str, time_lim
 
 if __name__ == '__main__':
     play_first = False  # You play first or not
-    opponent_name = "greedy_player"  # can choose from "Team6_A1", "Team6_A2", "Team6_A3", "random_player", and "greedy_player"
+    opponent_name = "greedy_player"  # can choose from "team6_A1", "team6_A2", "team6_A3_extra1", "random_player", and "greedy_player"
     time_limit_for_human = 100  # set a time limit
     time_limit_for_AI = 1  # in seconds
     initial_board_name = "random-3x3"  # can choose from "/boards"

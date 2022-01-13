@@ -2,8 +2,8 @@
 #  Software License, (See accompanying file LICENSE or copy at
 #  https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from Team6_A3.MonteCarlo import MonteCarloTreeSearchNode
-from Team6_A3.State import State
+from team6_A3_extra1.MonteCarlo import MonteCarloTreeSearchNode
+from team6_A3_extra1.State import State
 from competitive_sudoku.sudoku import GameState, Move, SudokuBoard, TabooMove
 import competitive_sudoku.sudokuai
 import time
